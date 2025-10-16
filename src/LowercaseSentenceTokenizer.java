@@ -34,20 +34,39 @@ public class LowercaseSentenceTokenizer implements Tokenizer {
    * @param scanner the Scanner to read the input text from
    * @return a list of tokens, where each token is a word or a period
    */
+  // for wave 2 i rewrote my method to match the new requirement
   @Override
   public List<String> tokenize(Scanner scanner) {
     List<String> tokens = new ArrayList<>();
 
-    // go through each word from the scanner
+    // here i read every word in the file
     while (scanner.hasNext()) {
-      String word = scanner.next().toLowerCase();
+      String part = scanner.next();
+      if (part == null)
+        continue;
 
-      // removes the weird spaces
-      word = word.trim();
+      // make all lower case
+      part = part.toLowerCase().trim();
+      if (part.isEmpty())
+        continue;
 
-      // skip if empty
+      // here i check if there are dots at the end
+      int cut = part.length();
+      while (cut > 0 && part.charAt(cut - 1) == '.') {
+        cut--;
+      }
+
+      // this is the main word before the dots
+      String word = part.substring(0, cut).trim();
       if (!word.isEmpty()) {
         tokens.add(word);
+      }
+
+      // here i add one period token for every and each dot that was at the end.
+      for (int i = cut; i < part.length(); i++) {
+        if (part.charAt(i) == '.') {
+          tokens.add(".");
+        }
       }
     }
 
